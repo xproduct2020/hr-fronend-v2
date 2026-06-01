@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { apiRequest, authHeader } from '../../lib/api';
+import { apiRequest, authHeader } from '../../../lib/api';
 
 export default function EmployerDashboard() {
   const router = useRouter();
