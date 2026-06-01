@@ -19,7 +19,7 @@ export default function EmployerPage() {
 
   function handleAuthSuccess(data) {
     localStorage.setItem('token', data.token);
-    router.push('/dashboard');
+    router.push('/employer/dashboard');
   }
 
   async function onSubmit(event) {
