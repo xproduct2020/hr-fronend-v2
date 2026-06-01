@@ -3,7 +3,7 @@
 import { GoogleLogin } from '@react-oauth/google';
 import { apiRequest } from '../lib/api';
 
-export default function GoogleSignIn({ onSuccess, onError }) {
+export default function GoogleSignIn({ onSuccess, onError, endpoint = '/auth/job-seeker/login/google' }) {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
   if (!clientId) return <p className="error">Google sign-in disabled: missing client ID.</p>;
 
@@ -11,7 +11,7 @@ export default function GoogleSignIn({ onSuccess, onError }) {
     <GoogleLogin
       onSuccess={async (credentialResponse) => {
         try {
-          const result = await apiRequest('/auth/google', {
+          const result = await apiRequest(endpoint, {
             method: 'POST',
             body: JSON.stringify({ idToken: credentialResponse.credential })
           });

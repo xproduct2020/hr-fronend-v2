@@ -3,17 +3,17 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import GoogleSignIn from '../components/GoogleSignIn';
-import { apiRequest } from '../lib/api';
+import GoogleSignIn from '../../components/GoogleSignIn';
+import { apiRequest } from '../../lib/api';
 
-export default function JobSeekerPage() {
+export default function EmployerPage() {
   const router = useRouter();
   const [mode, setMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [skills, setSkills] = useState('');
-  const [yearsExperience, setYearsExperience] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [website, setWebsite] = useState('');
+  const [industry, setIndustry] = useState('');
   const [error, setError] = useState('');
 
   function handleAuthSuccess(data) {
@@ -25,15 +25,15 @@ export default function JobSeekerPage() {
     event.preventDefault();
     setError('');
 
-    const endpoint = mode === 'login' ? '/auth/job-seeker/login' : '/auth/job-seeker/signup';
+    const endpoint = mode === 'login' ? '/auth/employer/login' : '/auth/employer/signup';
     const payload = {
       email,
       password,
       ...(mode === 'signup'
         ? {
-            fullName,
-            skills: skills || null,
-            yearsExperience: yearsExperience ? Number(yearsExperience) : null
+            companyName,
+            website: website || null,
+            industry: industry || null
           }
         : {})
     };
@@ -46,13 +46,13 @@ export default function JobSeekerPage() {
     }
   }
 
-  const googleEndpoint = mode === 'login' ? '/auth/job-seeker/login/google' : '/auth/job-seeker/signup/google';
+  const googleEndpoint = mode === 'login' ? '/auth/employer/login/google' : '/auth/employer/signup/google';
 
   return (
     <main>
       <div className="card">
-        <h1>Job Seeker Portal</h1>
-        <p>Login or create a job seeker account with email/password or Google.</p>
+        <h1>Employer Portal</h1>
+        <p>Login or create an employer account with email/password or Google.</p>
         <div className="role-links">
           <Link href="/">Job Seeker</Link>
           <Link href="/employer">Employer</Link>
@@ -72,21 +72,15 @@ export default function JobSeekerPage() {
             <input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
             {mode === 'signup' ? (
               <>
-                <input placeholder="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-                <input placeholder="Skills (optional)" value={skills} onChange={(e) => setSkills(e.target.value)} />
-                <input
-                  placeholder="Years of experience (optional)"
-                  type="number"
-                  min="0"
-                  value={yearsExperience}
-                  onChange={(e) => setYearsExperience(e.target.value)}
-                />
+                <input placeholder="Company name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
+                <input placeholder="Website (optional)" value={website} onChange={(e) => setWebsite(e.target.value)} />
+                <input placeholder="Industry (optional)" value={industry} onChange={(e) => setIndustry(e.target.value)} />
               </>
             ) : null}
           </div>
 
           {error ? <p className="error">{error}</p> : null}
-          <button type="submit">{mode === 'login' ? 'Login as Job Seeker' : 'Create Job Seeker Account'}</button>
+          <button type="submit">{mode === 'login' ? 'Login as Employer' : 'Create Employer Account'}</button>
         </form>
       </div>
 

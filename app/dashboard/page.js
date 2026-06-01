@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const t = localStorage.getItem('token');
-    if (!t) return router.push('/login');
+    if (!t) return router.push('/');
     setToken(t);
     (async () => {
       try {
@@ -23,7 +23,7 @@ export default function DashboardPage() {
         setApplications(data.applications);
       } catch {
         localStorage.removeItem('token');
-        router.push('/login');
+        router.push('/');
       }
     })();
   }, [router]);
@@ -52,7 +52,7 @@ export default function DashboardPage() {
 
   return (
     <main>
-      <div className="card"><h2>Dashboard</h2><button className="secondary" onClick={() => { localStorage.removeItem('token'); router.push('/login'); }}>Logout</button></div>
+      <div className="card"><h2>Dashboard</h2><button className="secondary" onClick={() => { localStorage.removeItem('token'); router.push('/'); }}>Logout</button></div>
       <div className="card"><h3>Add application</h3><form onSubmit={addApplication}><div className="row">
         <input placeholder="Company" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
         <input placeholder="Role" value={roleTitle} onChange={(e) => setRoleTitle(e.target.value)} required />
