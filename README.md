@@ -1,4 +1,4 @@
-# hr-fronend-v2
+# hr-frontend-v2
 
 Next.js frontend for job seeker tracker.
 
