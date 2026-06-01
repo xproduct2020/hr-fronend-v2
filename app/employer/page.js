@@ -14,6 +14,7 @@ export default function EmployerPage() {
   const [companyName, setCompanyName] = useState('');
   const [website, setWebsite] = useState('');
   const [industry, setIndustry] = useState('');
+  const [googleCompanyName, setGoogleCompanyName] = useState('');
   const [error, setError] = useState('');
 
   function handleAuthSuccess(data) {
@@ -86,7 +87,35 @@ export default function EmployerPage() {
 
       <div className="card">
         <h3>{mode === 'login' ? 'Or login with Google' : 'Or sign up with Google'}</h3>
-        <GoogleSignIn endpoint={googleEndpoint} onSuccess={handleAuthSuccess} onError={setError} />
+        {mode === 'signup' ? (
+          <>
+            <div className="row" style={{ marginBottom: '0.75rem' }}>
+              <input
+                placeholder="Company name (required)"
+                value={googleCompanyName}
+                onChange={(e) => setGoogleCompanyName(e.target.value)}
+              />
+            </div>
+            {googleCompanyName.trim() ? (
+              <GoogleSignIn
+                key="employer-google-signup"
+                endpoint="/auth/employer/signup/google"
+                onSuccess={handleAuthSuccess}
+                onError={setError}
+                extraData={{ companyName: googleCompanyName.trim() }}
+              />
+            ) : (
+              <p style={{ color: '#888', fontSize: '0.85rem' }}>Enter a company name above to enable Google sign-up.</p>
+            )}
+          </>
+        ) : (
+          <GoogleSignIn
+            key="employer-google-login"
+            endpoint="/auth/employer/login/google"
+            onSuccess={handleAuthSuccess}
+            onError={setError}
+          />
+        )}
       </div>
     </main>
   );
