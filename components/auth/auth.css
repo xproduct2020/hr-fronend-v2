@@ -343,3 +343,54 @@
   color: var(--text);
   border-color: var(--acc);
 }
+
+.auth-loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 16px;
+}
+
+.auth-loading-overlay__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 32px;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  min-width: 240px;
+}
+
+.auth-loading-overlay__spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--card-border);
+  border-top-color: var(--acc);
+  border-radius: 50%;
+  animation: auth-spin 0.7s linear infinite;
+}
+
+.auth-loading-overlay__message {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text);
+  text-align: center;
+}
+
+@keyframes auth-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.auth-google-wrap--loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
