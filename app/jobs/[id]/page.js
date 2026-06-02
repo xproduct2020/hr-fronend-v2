@@ -25,7 +25,7 @@ export default function JobDetailPage() {
   if (loading) {
     return (
       <JobBoardShell>
-        <JobBoardHeader token={token} onAccountClick={() => router.push('/')} />
+        <JobBoardHeader token={token} />
         <p className="empty-state">Loading…</p>
         <JobBoardFooter onSignInClick={() => router.push('/')} />
       </JobBoardShell>
@@ -35,7 +35,7 @@ export default function JobDetailPage() {
   if (!job) {
     return (
       <JobBoardShell>
-        <JobBoardHeader token={token} onAccountClick={() => router.push('/')} />
+        <JobBoardHeader token={token} />
         <div className="job-detail">
           <p className="empty-state">Job not found.</p>
           <Link href="/" className="job-detail-back">

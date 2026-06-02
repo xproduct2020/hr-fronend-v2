@@ -11,18 +11,10 @@ import {
   JobBoardHero,
   JobBoardFilters,
   JobList,
-  AuthModal,
 } from '../components/job-board';
 
 export default function JobSeekerPage() {
   const router = useRouter();
-  const [mode, setMode] = useState('login');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [skills, setSkills] = useState('');
-  const [yearsExperience, setYearsExperience] = useState('');
-  const [error, setError] = useState('');
 
   const [jobs, setJobs] = useState([]);
   const [total, setTotal] = useState(0);
@@ -37,7 +29,6 @@ export default function JobSeekerPage() {
   const [hasMore, setHasMore] = useState(false);
 
   const [token, setToken] = useState(null);
-  const [showAuth, setShowAuth] = useState(false);
   const skipJobTypeFetch = useRef(true);
 
   const fetchJobs = useCallback(
@@ -124,49 +115,15 @@ export default function JobSeekerPage() {
     fetchJobs({ pageNum: 1 });
   }
 
-  function handleAuthSuccess(data) {
-    localStorage.setItem('token', data.token);
-    setToken(data.token);
-    setShowAuth(false);
-    router.push('/dashboard');
-  }
-
-  function openSignIn(e) {
+  function goToSignIn(e) {
     e?.preventDefault?.();
     e?.stopPropagation?.();
-    setShowAuth(true);
-    setMode('login');
+    router.push('/login');
   }
-
-  async function onSubmit(event) {
-    event.preventDefault();
-    setError('');
-    const endpoint = mode === 'login' ? '/auth/job-seeker/login' : '/auth/job-seeker/signup';
-    const payload = {
-      email,
-      password,
-      ...(mode === 'signup'
-        ? {
-            fullName,
-            skills: skills || null,
-            yearsExperience: yearsExperience ? Number(yearsExperience) : null,
-          }
-        : {}),
-    };
-    try {
-      const data = await apiRequest(endpoint, { method: 'POST', body: JSON.stringify(payload) });
-      handleAuthSuccess(data);
-    } catch (err) {
-      setError(err.message);
-    }
-  }
-
-  const googleEndpoint =
-    mode === 'login' ? '/auth/job-seeker/login/google' : '/auth/job-seeker/signup/google';
 
   return (
     <JobBoardShell>
-      <JobBoardHeader token={token} onAccountClick={() => setShowAuth(true)} />
+      <JobBoardHeader token={token} />
 
       <JobBoardHero
         total={total}
@@ -198,32 +155,10 @@ export default function JobSeekerPage() {
         token={token}
         onSortChange={setSortBy}
         onLoadMore={() => fetchJobs({ pageNum: page + 1, append: true })}
-        onSignIn={openSignIn}
+        onSignIn={goToSignIn}
       />
 
-      <JobBoardFooter onSignInClick={openSignIn} />
-
-      <AuthModal
-        open={showAuth}
-        mode={mode}
-        email={email}
-        password={password}
-        fullName={fullName}
-        skills={skills}
-        yearsExperience={yearsExperience}
-        error={error}
-        googleEndpoint={googleEndpoint}
-        onClose={() => setShowAuth(false)}
-        onModeChange={setMode}
-        onEmailChange={setEmail}
-        onPasswordChange={setPassword}
-        onFullNameChange={setFullName}
-        onSkillsChange={setSkills}
-        onYearsExperienceChange={setYearsExperience}
-        onSubmit={onSubmit}
-        onSuccess={handleAuthSuccess}
-        onError={setError}
-      />
+      <JobBoardFooter onSignInClick={goToSignIn} />
     </JobBoardShell>
   );
 }

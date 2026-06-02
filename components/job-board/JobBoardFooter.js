@@ -18,14 +18,9 @@ export default function JobBoardFooter({ onSignInClick }) {
           <div className="footer-col">
             <h4>For job seekers</h4>
             <a href="#jobs">Browse Jobs</a>
-            <button
-              type="button"
-              className="clear-link"
-              style={{ display: 'block', marginBottom: 8 }}
-              onClick={onSignInClick}
-            >
+            <Link href="/login" style={{ display: 'block', marginBottom: 8 }} onClick={onSignInClick}>
               Sign in for salaries
-            </button>
+            </Link>
             <Link href="/dashboard">My applications</Link>
           </div>
           <div className="footer-col">
