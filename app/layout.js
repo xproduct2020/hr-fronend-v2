@@ -2,8 +2,12 @@ import './globals.css';
 import AppProviders from '../components/AppProviders';
 
 export const metadata = {
-  title: 'Job Seeker App',
-  description: 'Track applications with local + Google auth.'
+  title: 'workScout',
+  description: 'Find your next great opportunity. Browse jobs and manage applications on workScout.',
+  icons: {
+    icon: [{ url: '/favicon.png', type: 'image/png' }],
+    apple: [{ url: '/favicon.png', type: 'image/png' }],
+  },
 };
 
 export default function RootLayout({ children }) {
