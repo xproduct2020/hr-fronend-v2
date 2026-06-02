@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-export default function JobBoardHeader({ token, onAccountClick }) {
+export default function JobBoardHeader({ token }) {
   return (
     <header className="header">
       <div className="header-inner">
@@ -26,10 +26,10 @@ export default function JobBoardHeader({ token, onAccountClick }) {
               Account
             </Link>
           ) : (
-            <button type="button" className="account-btn" onClick={onAccountClick}>
+            <Link href="/login" className="account-btn">
               <i className="ti ti-user" aria-hidden="true" />
               Account
-            </button>
+            </Link>
           )}
         </nav>
       </div>
