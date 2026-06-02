@@ -4,3 +4,5 @@ export { default as EmployerStatCard } from './EmployerStatCard';
 export { default as EmployerJobCard } from './EmployerJobCard';
 export { default as EmployerApplicantsModal } from './EmployerApplicantsModal';
 export { default as EmployerDashboardFooter } from './EmployerDashboardFooter';
+export { default as JobPostForm } from './JobPostForm';
+export { default as JobPostPreview } from './JobPostPreview';
