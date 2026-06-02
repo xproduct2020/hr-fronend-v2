@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { apiRequest } from '../../lib/api';
 import {
   loginSchema,
@@ -16,6 +15,7 @@ import AuthCard from './AuthCard';
 import AuthInput from './AuthInput';
 import AuthDivider from './AuthDivider';
 import GoogleAuthButton from './GoogleAuthButton';
+import AuthLoadingOverlay from './AuthLoadingOverlay';
 
 function getRoleNav(roleConfig, mode) {
   const isJobSeeker = roleConfig.id === 'jobSeeker';
@@ -61,7 +61,6 @@ const EMPTY = {
 };
 
 export default function AuthPage({ roleConfig, mode }) {
-  const router = useRouter();
   const copy = mode === 'login' ? roleConfig.login : roleConfig.signup;
   const alternateHref = mode === 'login' ? roleConfig.signupPath : roleConfig.loginPath;
 
@@ -69,6 +68,8 @@ export default function AuthPage({ roleConfig, mode }) {
   const [fieldErrors, setFieldErrors] = useState({});
   const [formError, setFormError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [authLoading, setAuthLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState('Signing you in…');
 
   function setField(name, value) {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -116,7 +117,24 @@ export default function AuthPage({ roleConfig, mode }) {
 
   function handleAuthSuccess(data) {
     localStorage.setItem('token', data.token);
-    router.push(roleConfig.successRedirect);
+    setLoadingMessage('Redirecting…');
+    setAuthLoading(true);
+    // Full navigation avoids lingering on the auth page while client routing catches up
+    window.location.replace(roleConfig.successRedirect);
+  }
+
+  function handleAuthLoadingChange(state) {
+    if (state === false) {
+      setAuthLoading(false);
+      return;
+    }
+    if (state === 'redirect') {
+      setLoadingMessage('Redirecting…');
+      setAuthLoading(true);
+      return;
+    }
+    setLoadingMessage('Signing you in with Google…');
+    setAuthLoading(true);
   }
 
   function buildSignupPayload() {
@@ -152,6 +170,8 @@ export default function AuthPage({ roleConfig, mode }) {
     if (!validateAll()) return;
 
     setSubmitting(true);
+    setAuthLoading(true);
+    setLoadingMessage(mode === 'login' ? 'Signing you in…' : 'Creating your account…');
     const endpoint = mode === 'login' ? roleConfig.loginEndpoint : roleConfig.signupEndpoint;
     const payload =
       mode === 'login'
@@ -166,6 +186,7 @@ export default function AuthPage({ roleConfig, mode }) {
       handleAuthSuccess(data);
     } catch (err) {
       setFormError(err.message || 'Something went wrong. Please try again.');
+      setAuthLoading(false);
     } finally {
       setSubmitting(false);
     }
@@ -190,8 +211,11 @@ export default function AuthPage({ roleConfig, mode }) {
     mode === 'login' ||
     (values.googleCompanyName.trim() || values.companyName.trim());
 
+  const isBusy = authLoading || submitting;
+
   return (
     <AuthLayout roleLinks={getRoleNav(roleConfig, mode)}>
+      {authLoading ? <AuthLoadingOverlay message={loadingMessage} /> : null}
       <header className="auth-page__header">
         <h1 className="auth-page__title">{copy.pageTitle}</h1>
         <p className="auth-page__subtitle">{copy.pageSubtitle}</p>
@@ -338,7 +362,7 @@ export default function AuthPage({ roleConfig, mode }) {
             </p>
           ) : null}
 
-          <button type="submit" className="auth-btn" disabled={submitting}>
+          <button type="submit" className="auth-btn" disabled={isBusy}>
             {submitting ? 'Please wait…' : copy.submitLabel}
           </button>
         </form>
@@ -363,8 +387,13 @@ export default function AuthPage({ roleConfig, mode }) {
                 mode={mode}
                 endpoint={googleEndpoint}
                 extraData={googleExtra}
+                disabled={isBusy}
+                onLoadingChange={handleAuthLoadingChange}
                 onSuccess={handleAuthSuccess}
-                onError={setFormError}
+                onError={(msg) => {
+                  setFormError(msg);
+                  setAuthLoading(false);
+                }}
               />
             ) : (
               <p className="auth-google-hint">Enter a company name above to enable Google sign-up.</p>
