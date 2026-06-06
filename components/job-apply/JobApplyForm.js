@@ -28,10 +28,14 @@ function buildLocationOptions(company, job) {
   return [];
 }
 
-function FloatingInput({ id, label, required, value, onChange, type = 'text' }) {
+function FloatingInput({ id, label, required, value, onChange, type = 'text', tall = false }) {
   const filled = Boolean(value?.trim());
   return (
-    <div className={`job-apply__field job-apply__input-wrap${filled ? ' job-apply__input-wrap--filled' : ''}`}>
+    <div
+      className={`job-apply__field job-apply__input-wrap${filled ? ' job-apply__input-wrap--filled' : ''}${
+        tall ? ' job-apply__input-wrap--tall' : ''
+      }`}
+    >
       <input
         id={id}
         type={type}
@@ -254,63 +258,67 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
 
             <section className="job-apply__section">
               <h2 className="job-apply__section-title">Personal information</h2>
-              <FloatingInput
-                id="fullName"
-                label="Full name"
-                required
-                value={fullName}
-                onChange={setFullName}
-              />
-              <FloatingInput
-                id="phone"
-                label="Phone number"
-                required
-                value={phone}
-                onChange={setPhone}
-                type="tel"
-              />
+              <div className="job-apply__personal-grid">
+                <FloatingInput
+                  id="fullName"
+                  label="Full name"
+                  required
+                  tall
+                  value={fullName}
+                  onChange={setFullName}
+                />
+                <FloatingInput
+                  id="phone"
+                  label="Phone number"
+                  required
+                  tall
+                  value={phone}
+                  onChange={setPhone}
+                  type="tel"
+                />
 
-              <div className="job-apply__field">
-                <div
-                  className={`job-apply__input-wrap${
-                    locationPick || selectedLocations.length ? ' job-apply__input-wrap--filled' : ''
-                  }`}
-                >
-                  <select
-                    id="location"
-                    className="job-apply__select"
-                    value={locationPick}
-                    onChange={(e) => addLocation(e.target.value)}
-                    disabled={selectedLocations.length >= MAX_LOCATIONS || !locationOptions.length}
+                <div className="job-apply__field job-apply__field--full">
+                  <div
+                    className={`job-apply__input-wrap job-apply__input-wrap--tall${
+                      locationPick || selectedLocations.length ? ' job-apply__input-wrap--filled' : ''
+                    }`}
                   >
-                    <option value="" hidden />
-                    {locationOptions
-                      .filter((opt) => !selectedLocations.includes(opt.label))
-                      .map((opt) => (
-                        <option key={opt.id} value={opt.label}>
-                          {opt.label}
-                        </option>
-                      ))}
-                  </select>
-                  <label className="job-apply__floating-label" htmlFor="location">
-                    Preferred work location <span className="job-apply__required">*</span>
-                  </label>
-                </div>
-                <p className="job-apply__loc-counter">
-                  {selectedLocations.length}/{MAX_LOCATIONS} locations
-                </p>
-                {selectedLocations.length > 0 && (
-                  <div className="job-apply__loc-tags">
-                    {selectedLocations.map((loc) => (
-                      <span key={loc} className="job-apply__loc-tag">
-                        {loc}
-                        <button type="button" onClick={() => removeLocation(loc)} aria-label={`Remove ${loc}`}>
-                          ×
-                        </button>
-                      </span>
-                    ))}
+                    <select
+                      id="location"
+                      className="job-apply__select"
+                      value={locationPick}
+                      onChange={(e) => addLocation(e.target.value)}
+                      disabled={selectedLocations.length >= MAX_LOCATIONS || !locationOptions.length}
+                    >
+                      <option value="" hidden />
+                      {locationOptions
+                        .filter((opt) => !selectedLocations.includes(opt.label))
+                        .map((opt) => (
+                          <option key={opt.id} value={opt.label}>
+                            {opt.label}
+                          </option>
+                        ))}
+                    </select>
+                    <label className="job-apply__floating-label" htmlFor="location">
+                      Preferred work location <span className="job-apply__required">*</span>
+                    </label>
                   </div>
-                )}
+                  <p className="job-apply__loc-counter">
+                    {selectedLocations.length}/{MAX_LOCATIONS} locations
+                  </p>
+                  {selectedLocations.length > 0 && (
+                    <div className="job-apply__loc-tags">
+                      {selectedLocations.map((loc) => (
+                        <span key={loc} className="job-apply__loc-tag">
+                          {loc}
+                          <button type="button" onClick={() => removeLocation(loc)} aria-label={`Remove ${loc}`}>
+                            ×
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </section>
 

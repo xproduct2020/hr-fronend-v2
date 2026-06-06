@@ -54,16 +54,22 @@
 }
 
 .job-apply__main {
-  max-width: 640px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 24px 16px 48px;
+  padding: 24px 24px 48px;
 }
 
 .job-apply__card {
   background: #fff;
   border-radius: 12px;
-  padding: 32px 28px;
+  padding: 36px 40px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+@media (max-width: 640px) {
+  .job-apply__card {
+    padding: 28px 20px;
+  }
 }
 
 .job-apply__title {
@@ -162,12 +168,44 @@
   line-height: 1.5;
 }
 
+.job-apply__personal-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+}
+
+.job-apply__personal-grid .job-apply__field--full {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 720px) {
+  .job-apply__personal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .job-apply__personal-grid .job-apply__field--full {
+    grid-column: auto;
+  }
+}
+
 .job-apply__field {
-  margin-bottom: 16px;
+  margin-bottom: 0;
+}
+
+.job-apply__section .job-apply__field + .job-apply__field,
+.job-apply__section .job-apply__personal-grid + .job-apply__field {
+  margin-top: 16px;
 }
 
 .job-apply__input-wrap {
   position: relative;
+}
+
+.job-apply__input-wrap--tall .job-apply__input,
+.job-apply__input-wrap--tall .job-apply__select {
+  min-height: 56px;
+  padding: 22px 14px 8px;
+  font-size: 15px;
 }
 
 .job-apply__input,
@@ -183,6 +221,26 @@
   background: #fff;
   box-sizing: border-box;
   transition: border-color 0.2s;
+}
+
+.job-apply__input-wrap--tall .job-apply__select {
+  padding: 22px 40px 8px 14px;
+  background-position: right 14px center;
+}
+
+.job-apply__input-wrap--tall .job-apply__floating-label {
+  font-size: 15px;
+}
+
+.job-apply__input-wrap--tall.job-apply__input-wrap--filled .job-apply__floating-label,
+.job-apply__input-wrap--tall .job-apply__input:focus + .job-apply__floating-label,
+.job-apply__input-wrap--tall .job-apply__select:focus + .job-apply__floating-label {
+  top: 10px;
+  font-size: 12px;
+}
+
+.job-apply__input-wrap--tall .job-apply__floating-label {
+  left: 14px;
 }
 
 .job-apply__input:focus,
@@ -204,7 +262,8 @@
 }
 
 .job-apply__input-wrap--filled .job-apply__floating-label,
-.job-apply__input:focus + .job-apply__floating-label {
+.job-apply__input:focus + .job-apply__floating-label,
+.job-apply__select:focus + .job-apply__floating-label {
   top: 8px;
   transform: none;
   font-size: 11px;
