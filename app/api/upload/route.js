@@ -14,9 +14,9 @@ export async function POST(request) {
     return Response.json({ error: 'Only PDF, DOC, and DOCX files are allowed.' }, { status: 400 });
   }
 
-  // 5 MB limit
-  if (file.size > 5 * 1024 * 1024) {
-    return Response.json({ error: 'File must be under 5 MB.' }, { status: 400 });
+  // 3 MB limit
+  if (file.size > 3 * 1024 * 1024) {
+    return Response.json({ error: 'File must be under 3 MB.' }, { status: 400 });
   }
 
   const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
