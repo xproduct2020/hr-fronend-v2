@@ -53,13 +53,6 @@ export default function JobCompanyCard({ company }) {
         </div>
       )}
 
-      {company.description && (
-        <div className="job-company-card__section">
-          <h3>About the company</h3>
-          <p className="job-company-card__description">{company.description}</p>
-        </div>
-      )}
-
       {hasLocations && (
         <div className="job-company-card__section">
           <h3>Locations</h3>
