@@ -172,6 +172,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px 20px;
+  align-items: start;
 }
 
 .job-apply__personal-grid .job-apply__field--full {
@@ -201,11 +202,23 @@
   position: relative;
 }
 
+.job-apply__input-wrap--tall .job-apply__floating-label {
+  left: 14px;
+  top: 10px;
+  transform: none;
+  font-size: 12px;
+}
+
 .job-apply__input-wrap--tall .job-apply__input,
 .job-apply__input-wrap--tall .job-apply__select {
   min-height: 56px;
-  padding: 22px 14px 8px;
+  padding: 28px 14px 10px;
   font-size: 15px;
+}
+
+.job-apply__input-wrap--tall .job-apply__select {
+  padding-right: 40px;
+  background-position: right 14px center;
 }
 
 .job-apply__input,
@@ -221,26 +234,6 @@
   background: #fff;
   box-sizing: border-box;
   transition: border-color 0.2s;
-}
-
-.job-apply__input-wrap--tall .job-apply__select {
-  padding: 22px 40px 8px 14px;
-  background-position: right 14px center;
-}
-
-.job-apply__input-wrap--tall .job-apply__floating-label {
-  font-size: 15px;
-}
-
-.job-apply__input-wrap--tall.job-apply__input-wrap--filled .job-apply__floating-label,
-.job-apply__input-wrap--tall .job-apply__input:focus + .job-apply__floating-label,
-.job-apply__input-wrap--tall .job-apply__select:focus + .job-apply__floating-label {
-  top: 10px;
-  font-size: 12px;
-}
-
-.job-apply__input-wrap--tall .job-apply__floating-label {
-  left: 14px;
 }
 
 .job-apply__input:focus,
@@ -261,9 +254,9 @@
   transition: all 0.15s;
 }
 
-.job-apply__input-wrap--filled .job-apply__floating-label,
-.job-apply__input:focus + .job-apply__floating-label,
-.job-apply__select:focus + .job-apply__floating-label {
+.job-apply__input-wrap:not(.job-apply__input-wrap--tall).job-apply__input-wrap--filled .job-apply__floating-label,
+.job-apply__input-wrap:not(.job-apply__input-wrap--tall) .job-apply__input:focus + .job-apply__floating-label,
+.job-apply__input-wrap:not(.job-apply__input-wrap--tall) .job-apply__select:focus + .job-apply__floating-label {
   top: 8px;
   transform: none;
   font-size: 11px;
