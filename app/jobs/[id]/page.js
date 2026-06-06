@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { apiRequest } from '../../../lib/api';
+import { fetchAppliedJobIds } from '../../../lib/applied-jobs';
 import {
   JobBoardShell,
   JobBoardHeader,
@@ -19,9 +20,12 @@ export default function JobDetailPage() {
   const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState(null);
+  const [hasApplied, setHasApplied] = useState(false);
 
   useEffect(() => {
-    setToken(localStorage.getItem('token'));
+    const t = localStorage.getItem('token');
+    setToken(t);
+
     apiRequest(`/jobs/${id}`)
       .then((data) => {
         setJob(data.job);
@@ -29,6 +33,12 @@ export default function JobDetailPage() {
       })
       .catch(() => setJob(null))
       .finally(() => setLoading(false));
+
+    if (t) {
+      fetchAppliedJobIds(t).then((ids) => setHasApplied(ids.has(String(id))));
+    } else {
+      setHasApplied(false);
+    }
   }, [id]);
 
   if (loading) {
@@ -71,7 +81,8 @@ export default function JobDetailPage() {
             company={company}
             jobId={id}
             token={token}
-            onSignIn={() => router.push('/')}
+            hasApplied={hasApplied}
+            onSignIn={() => router.push('/login')}
           />
           <JobCompanyCard company={company} />
         </div>
