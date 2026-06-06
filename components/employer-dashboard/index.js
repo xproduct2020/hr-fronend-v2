@@ -6,3 +6,4 @@ export { default as EmployerApplicantsModal } from './EmployerApplicantsModal';
 export { default as EmployerDashboardFooter } from './EmployerDashboardFooter';
 export { default as JobPostForm } from './JobPostForm';
 export { default as JobPostPreview } from './JobPostPreview';
+export { default as CompanySettingsForm } from './CompanySettingsForm';
