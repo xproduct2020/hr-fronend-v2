@@ -168,6 +168,11 @@
   background: rgba(249, 115, 22, 0.06);
 }
 
+.company-settings__upload-btn--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
 .company-settings__upload-btn input {
   display: none;
 }
@@ -256,4 +261,109 @@
 .company-settings__btn--primary:disabled {
   opacity: 0.65;
   cursor: not-allowed;
+}
+
+/* Multiple locations */
+.company-locations {
+  grid-column: 1 / -1;
+}
+
+.company-locations__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.company-locations__header label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.company-locations__add {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  background: rgba(249, 115, 22, 0.1);
+  color: var(--acc);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--dm);
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.company-locations__add:hover {
+  background: rgba(249, 115, 22, 0.18);
+  border-color: var(--acc);
+}
+
+.company-locations__list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.company-locations__item {
+  background: var(--bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.company-locations__item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.company-locations__item-num {
+  font-family: var(--syne);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.company-locations__remove {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 12px;
+  font-family: var(--dm);
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+
+.company-locations__remove:hover {
+  background: rgba(248, 113, 113, 0.1);
+}
+
+.company-locations__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .company-locations__fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+.company-locations__fields .company-settings__field:first-child {
+  grid-column: 1 / -1;
 }

@@ -5,12 +5,13 @@ import { useRouter } from 'next/navigation';
 import { apiRequest, authHeader } from '../../lib/api';
 import {
   DEFAULT_COMPANY_SETTINGS,
-  loadCompanySettings,
   saveCompanySettings,
 } from '../../lib/company-settings-storage';
 import EmployerDashboardShell from './EmployerDashboardShell';
 import EmployerDashboardHeader from './EmployerDashboardHeader';
 import EmployerDashboardFooter from './EmployerDashboardFooter';
+import CompanyLocationsEditor from './CompanyLocationsEditor';
+import { uploadCompanyLogo } from '../../lib/upload-company-logo';
 import './company-settings.css';
 
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -66,6 +67,7 @@ export default function CompanySettingsForm() {
   const [form, setForm] = useState(DEFAULT_COMPANY_SETTINGS);
   const [userEmail, setUserEmail] = useState('');
   const [saving, setSaving] = useState(false);
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [loaded, setLoaded] = useState(false);
 
@@ -76,21 +78,14 @@ export default function CompanySettingsForm() {
       return;
     }
 
-    const saved = loadCompanySettings();
-    setForm(saved);
-
     Promise.all([
-      apiRequest('/employer/dashboard', { headers: authHeader(t) }).catch(() => null),
+      apiRequest('/employer/company', { headers: authHeader(t) }).catch(() => null),
       apiRequest('/auth/me', { headers: authHeader(t) }).catch(() => ({ user: null })),
-    ]).then(([dash, me]) => {
+    ]).then(([companyRes, me]) => {
       setUserEmail(me?.user?.email || '');
-      if (dash?.employer && !saved.companyName) {
-        setForm((prev) => ({
-          ...prev,
-          companyName: dash.employer.company_name || prev.companyName,
-          industry: dash.employer.industry || prev.industry,
-          website: dash.employer.website || prev.website,
-        }));
+      if (companyRes?.company) {
+        setForm(companyRes.company);
+        saveCompanySettings(companyRes.company);
       }
       setLoaded(true);
     });
@@ -98,6 +93,11 @@ export default function CompanySettingsForm() {
 
   function updateField(name, value) {
     setForm((prev) => ({ ...prev, [name]: value }));
+    setMessage({ type: '', text: '' });
+  }
+
+  function updateLocations(locations) {
+    setForm((prev) => ({ ...prev, locations }));
     setMessage({ type: '', text: '' });
   }
 
@@ -111,7 +111,7 @@ export default function CompanySettingsForm() {
     setMessage({ type: '', text: '' });
   }
 
-  function handleLogoChange(e) {
+  async function handleLogoChange(e) {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith('image/')) {
@@ -122,13 +122,23 @@ export default function CompanySettingsForm() {
       setMessage({ type: 'error', text: 'Logo must be under 2 MB.' });
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => updateField('logoDataUrl', reader.result);
-    reader.readAsDataURL(file);
+
+    setUploadingLogo(true);
+    setMessage({ type: '', text: '' });
+    try {
+      const url = await uploadCompanyLogo(file);
+      updateField('logoUrl', url);
+      setMessage({ type: 'success', text: 'Logo uploaded to storage.' });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message });
+    } finally {
+      setUploadingLogo(false);
+      e.target.value = '';
+    }
   }
 
   function removeLogo() {
-    updateField('logoDataUrl', '');
+    updateField('logoUrl', '');
   }
 
   function handleReset() {
@@ -137,18 +147,28 @@ export default function CompanySettingsForm() {
     setMessage({ type: 'success', text: 'Form cleared.' });
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     if (!form.companyName.trim()) {
       setMessage({ type: 'error', text: 'Company name is required.' });
       return;
     }
     setSaving(true);
+    setMessage({ type: '', text: '' });
     try {
-      saveCompanySettings(form);
-      setMessage({ type: 'success', text: 'Company settings saved locally.' });
-    } catch {
-      setMessage({ type: 'error', text: 'Failed to save settings.' });
+      const t = localStorage.getItem('token');
+      const data = await apiRequest('/employer/company', {
+        method: 'PUT',
+        headers: authHeader(t),
+        body: JSON.stringify(form),
+      });
+      if (data?.company) {
+        setForm(data.company);
+        saveCompanySettings(data.company);
+      }
+      setMessage({ type: 'success', text: data?.message || 'Company settings saved.' });
+    } catch (err) {
+      setMessage({ type: 'error', text: err.message || 'Failed to save settings.' });
     } finally {
       setSaving(false);
     }
@@ -177,7 +197,7 @@ export default function CompanySettingsForm() {
         <div className="company-settings__intro">
           <h2 className="company-settings__heading">Company Information</h2>
           <p className="company-settings__subheading">
-            Update how your company appears to job seekers. Settings are stored in your browser until backend integration is added.
+            Update how your company appears to job seekers.
           </p>
         </div>
 
@@ -207,29 +227,32 @@ export default function CompanySettingsForm() {
                 <label>Company Logo</label>
                 <div className="company-settings__logo-row">
                   <div className="company-settings__logo-preview">
-                    {form.logoDataUrl ? (
-                      <img src={form.logoDataUrl} alt="Company logo preview" />
+                    {form.logoUrl ? (
+                      <img src={form.logoUrl} alt="Company logo preview" />
                     ) : (
                       <i className="ti ti-photo" aria-hidden="true" />
                     )}
                   </div>
                   <div className="company-settings__logo-actions">
-                    <label className="company-settings__upload-btn">
+                    <label className={`company-settings__upload-btn${uploadingLogo ? ' company-settings__upload-btn--disabled' : ''}`}>
                       <i className="ti ti-upload" aria-hidden="true" />
-                      Upload logo
-                      <input type="file" accept="image/*" onChange={handleLogoChange} />
+                      {uploadingLogo ? 'Uploading…' : 'Upload logo'}
+                      <input type="file" accept="image/*" onChange={handleLogoChange} disabled={uploadingLogo} />
                     </label>
-                    {form.logoDataUrl ? (
+                    {form.logoUrl ? (
                       <button
                         type="button"
                         className="company-settings__upload-btn"
                         style={{ marginLeft: 8 }}
                         onClick={removeLogo}
+                        disabled={uploadingLogo}
                       >
                         Remove
                       </button>
                     ) : null}
-                    <p className="company-settings__hint">PNG or JPG, max 2 MB. Stored locally in browser.</p>
+                    <p className="company-settings__hint">
+                      PNG or JPG, max 2 MB. Stored in Vercel Blob under <code>company-logo/</code>.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -307,16 +330,11 @@ export default function CompanySettingsForm() {
               Location &amp; Schedule
             </h3>
             <div className="company-settings__grid">
-              <div className="company-settings__field company-settings__field--full">
-                <label htmlFor="location">Location</label>
-                <input
-                  id="location"
-                  type="text"
-                  value={form.location}
-                  onChange={(e) => updateField('location', e.target.value)}
-                  placeholder="e.g. San Francisco, CA or Ho Chi Minh City"
-                />
-              </div>
+              <CompanyLocationsEditor
+                locations={form.locations}
+                onChange={updateLocations}
+                countries={COUNTRIES}
+              />
 
               <div className="company-settings__field company-settings__field--full">
                 <label>Working Days</label>
