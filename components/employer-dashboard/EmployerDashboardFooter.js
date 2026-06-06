@@ -18,6 +18,7 @@ export default function EmployerDashboardFooter() {
             <Link href="/">Browse Jobs</Link>
             <Link href="/employer/dashboard">Employer Dashboard</Link>
             <Link href="/employer/job-post">Post a Job</Link>
+            <Link href="/employer/company">Company Settings</Link>
           </div>
           <div className="employer-dash__footer-col">
             <h4>Support</h4>

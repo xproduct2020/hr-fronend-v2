@@ -4,10 +4,13 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function EmployerDashboardHeader({
+  pageTitle = 'Employer Dashboard',
+  pageSubtitle = 'Manage your job postings and applications',
   companyName,
   userName,
   userEmail,
   onPostJob,
+  onSettings,
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -26,13 +29,19 @@ export default function EmployerDashboardHeader({
     router.push('/employer/login');
   }
 
+  function goToSettings() {
+    setOpen(false);
+    if (onSettings) onSettings();
+    else router.push('/employer/company');
+  }
+
   const displayName = userName || companyName || 'Account';
 
   return (
     <header className="employer-dash__header">
       <div>
-        <h1 className="employer-dash__title">Employer Dashboard</h1>
-        <p className="employer-dash__subtitle">Manage your job postings and applications</p>
+        <h1 className="employer-dash__title">{pageTitle}</h1>
+        <p className="employer-dash__subtitle">{pageSubtitle}</p>
       </div>
       <div className="employer-dash__actions">
         <button type="button" className="employer-dash__btn-primary" onClick={onPostJob}>
@@ -56,9 +65,9 @@ export default function EmployerDashboardHeader({
                 <p className="employer-dash__dropdown-name">{displayName}</p>
                 {userEmail ? <p className="employer-dash__dropdown-email">{userEmail}</p> : null}
               </div>
-              <button type="button" className="employer-dash__dropdown-item" role="menuitem" onClick={() => setOpen(false)}>
+              <button type="button" className="employer-dash__dropdown-item" role="menuitem" onClick={goToSettings}>
                 <i className="ti ti-settings" aria-hidden="true" />
-                Settings
+                Company Settings
               </button>
               <button
                 type="button"
