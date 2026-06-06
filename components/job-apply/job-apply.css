@@ -168,33 +168,17 @@
   line-height: 1.5;
 }
 
-.job-apply__personal-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px 20px;
-  align-items: start;
-}
-
-.job-apply__personal-grid .job-apply__field--full {
-  grid-column: 1 / -1;
-}
-
-@media (max-width: 720px) {
-  .job-apply__personal-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .job-apply__personal-grid .job-apply__field--full {
-    grid-column: auto;
-  }
+.job-apply__personal-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .job-apply__field {
   margin-bottom: 0;
 }
 
-.job-apply__section .job-apply__field + .job-apply__field,
-.job-apply__section .job-apply__personal-grid + .job-apply__field {
+.job-apply__section .job-apply__personal-fields + .job-apply__field {
   margin-top: 16px;
 }
 
@@ -281,39 +265,6 @@
   background-repeat: no-repeat;
   background-position: right 12px center;
   cursor: pointer;
-}
-
-.job-apply__loc-counter {
-  margin: 6px 0 0;
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.job-apply__loc-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.job-apply__loc-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: #f3f4f6;
-  font-size: 13px;
-}
-
-.job-apply__loc-tag button {
-  border: none;
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  padding: 0;
-  font-size: 14px;
-  line-height: 1;
 }
 
 .job-apply__char-count {
