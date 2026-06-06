@@ -5,4 +5,4 @@ export { default as JobBoardHero } from './JobBoardHero';
 export { default as JobBoardFilters } from './JobBoardFilters';
 export { default as JobCard } from './JobCard';
 export { default as JobList } from './JobList';
-export { default as AuthModal } from './AuthModal';
+export { default as JobCompanyCard } from './JobCompanyCard';
