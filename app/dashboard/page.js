@@ -1,66 +1,112 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest, authHeader } from '../../lib/api';
+import {
+  JobSeekerDashboardShell,
+  JobSeekerSidebar,
+  JobSeekerProfileHeader,
+  JobSeekerCvViewsCard,
+  JobSeekerAttachedCv,
+  JobSeekerProfileProgress,
+  JobSeekerActivities,
+} from '../../components/job-seeker-dashboard';
+
+const SAVED_JOBS_KEY = 'saved_jobs';
+
+function getSavedJobsCount() {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_JOBS_KEY) || '[]').length;
+  } catch {
+    return 0;
+  }
+}
 
 export default function DashboardPage() {
   const router = useRouter();
-  const [token, setToken] = useState('');
-  const [applications, setApplications] = useState([]);
-  const [companyName, setCompanyName] = useState('');
-  const [roleTitle, setRoleTitle] = useState('');
-  const [status, setStatus] = useState('Applied');
-  const [error, setError] = useState('');
+  const [data, setData] = useState(null);
+  const [savedJobs, setSavedJobs] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const loadProfile = useCallback(async (token) => {
+    const result = await apiRequest('/job-seekers/me', { headers: authHeader(token) });
+    setData(result);
+    setSavedJobs(getSavedJobsCount());
+  }, []);
 
   useEffect(() => {
-    const t = localStorage.getItem('token');
-    if (!t) return router.push('/');
-    setToken(t);
-    (async () => {
-      try {
-        const data = await apiRequest('/applications', { headers: authHeader(t) });
-        setApplications(data.applications);
-      } catch {
-        localStorage.removeItem('token');
-        router.push('/');
-      }
-    })();
-  }, [router]);
-
-  async function addApplication(e) {
-    e.preventDefault();
-    try {
-      const data = await apiRequest('/applications', {
-        method: 'POST',
-        headers: authHeader(token),
-        body: JSON.stringify({ companyName, roleTitle, status })
-      });
-      setApplications((prev) => [data.application, ...prev]);
-      setCompanyName('');
-      setRoleTitle('');
-      setStatus('Applied');
-    } catch (err) {
-      setError(err.message);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.replace('/login');
+      return;
     }
+
+    loadProfile(token)
+      .catch(() => {
+        localStorage.removeItem('token');
+        router.replace('/login');
+      })
+      .finally(() => setLoading(false));
+  }, [router, loadProfile]);
+
+  async function handleToggleCvVisible(cvVisible) {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const result = await apiRequest('/job-seekers/me', {
+      method: 'PATCH',
+      headers: authHeader(token),
+      body: JSON.stringify({ cvVisible }),
+    });
+    setData(result);
   }
 
-  async function removeApplication(id) {
-    await apiRequest(`/applications/${id}`, { method: 'DELETE', headers: authHeader(token) });
-    setApplications((prev) => prev.filter((x) => x.id !== id));
+  async function handleCvUpload(resumeUrl) {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    const result = await apiRequest('/job-seekers/me', {
+      method: 'PATCH',
+      headers: authHeader(token),
+      body: JSON.stringify({ resumeUrl }),
+    });
+    setData(result);
   }
+
+  if (loading) {
+    return (
+      <JobSeekerDashboardShell>
+        <p className="js-dash__loading">Loading dashboard…</p>
+      </JobSeekerDashboardShell>
+    );
+  }
+
+  if (!data?.profile) return null;
+
+  const { profile, stats } = data;
 
   return (
-    <main>
-      <div className="card"><h2>Dashboard</h2><button className="secondary" onClick={() => { localStorage.removeItem('token'); router.push('/'); }}>Logout</button></div>
-      <div className="card"><h3>Add application</h3><form onSubmit={addApplication}><div className="row">
-        <input placeholder="Company" value={companyName} onChange={(e) => setCompanyName(e.target.value)} required />
-        <input placeholder="Role" value={roleTitle} onChange={(e) => setRoleTitle(e.target.value)} required />
-        <select value={status} onChange={(e) => setStatus(e.target.value)}><option>Applied</option><option>Interview</option><option>Offer</option><option>Rejected</option></select>
-      </div>{error ? <p className="error">{error}</p> : null}<button type="submit">Save</button></form></div>
-      <div className="card"><h3>Applications</h3>{applications.map((item) => (
-        <div key={item.id} className="card"><p>{item.company_name} - {item.role_title}</p><p>Status: {item.status}</p><button className="secondary" onClick={() => removeApplication(item.id)}>Delete</button></div>
-      ))}</div>
-    </main>
+    <JobSeekerDashboardShell>
+      <div className="js-dash__layout">
+        <JobSeekerSidebar
+          fullName={profile.fullName}
+          cvVisible={profile.cvVisible}
+          cvViews={stats.cvViews}
+          stats={stats}
+          onToggleCvVisible={handleToggleCvVisible}
+        />
+
+        <div className="js-dash__main">
+          <JobSeekerProfileHeader profile={profile} />
+          <JobSeekerCvViewsCard cvViews={stats.cvViews} />
+          <JobSeekerAttachedCv resumeUrl={profile.resumeUrl} onUpload={handleCvUpload} />
+          <JobSeekerProfileProgress profileCompletion={profile.profileCompletion} />
+          <JobSeekerActivities
+            appliedJobs={stats.appliedJobs}
+            savedJobs={savedJobs}
+            jobInvitations={stats.jobInvitations}
+          />
+        </div>
+      </div>
+    </JobSeekerDashboardShell>
   );
 }
