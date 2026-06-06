@@ -6,3 +6,5 @@ export { default as JobBoardFilters } from './JobBoardFilters';
 export { default as JobCard } from './JobCard';
 export { default as JobList } from './JobList';
 export { default as JobCompanyCard } from './JobCompanyCard';
+export { default as JobDetailContent } from './JobDetailContent';
+export { default as AuthModal } from './AuthModal';
