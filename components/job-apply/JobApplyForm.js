@@ -4,29 +4,10 @@ import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { apiRequest, authHeader } from '../../lib/api';
-import { formatLocationLine } from '../../lib/job-board-utils';
 import './job-apply.css';
 
 const MAX_COVER = 500;
 const MAX_CV_MB = 3;
-const MAX_LOCATIONS = 3;
-
-function buildLocationOptions(company, job) {
-  const fromCompany = (company?.locations || [])
-    .filter((loc) => loc.label?.trim() || loc.address?.trim() || loc.country?.trim())
-    .map((loc) => ({
-      id: loc.id,
-      label: formatLocationLine(loc),
-    }));
-
-  if (fromCompany.length) return fromCompany;
-
-  if (job?.location) {
-    return [{ id: 'job', label: job.location }];
-  }
-
-  return [];
-}
 
 function FloatingInput({ id, label, required, value, onChange, type = 'text', tall = false }) {
   const filled = Boolean(value?.trim());
@@ -60,27 +41,13 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
   const [resumeFile, setResumeFile] = useState(null);
   const [fullName, setFullName] = useState(profile?.fullName || '');
   const [phone, setPhone] = useState(profile?.phone || '');
-  const [selectedLocations, setSelectedLocations] = useState([]);
-  const [locationPick, setLocationPick] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const locationOptions = buildLocationOptions(company, job);
   const companyName = company?.companyName || job?.company_name || 'Company';
   const jobTitle = `${job?.title || 'Job'} at ${companyName}`;
-
-  function addLocation(value) {
-    if (!value || selectedLocations.includes(value)) return;
-    if (selectedLocations.length >= MAX_LOCATIONS) return;
-    setSelectedLocations((prev) => [...prev, value]);
-    setLocationPick('');
-  }
-
-  function removeLocation(value) {
-    setSelectedLocations((prev) => prev.filter((loc) => loc !== value));
-  }
 
   function handleFileChange(e) {
     const file = e.target.files?.[0];
@@ -158,7 +125,6 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
           coverLetter: coverLetter.trim() || undefined,
           resumeUrl,
           phone: phone.trim(),
-          preferredLocations: selectedLocations.length ? selectedLocations : undefined,
         }),
       });
 
@@ -254,7 +220,7 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
 
             <section className="job-apply__section">
               <h2 className="job-apply__section-title">Personal information</h2>
-              <div className="job-apply__personal-grid">
+              <div className="job-apply__personal-fields">
                 <FloatingInput
                   id="fullName"
                   label="Full name"
@@ -272,49 +238,6 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
                   onChange={setPhone}
                   type="tel"
                 />
-
-                <div className="job-apply__field job-apply__field--full">
-                  <div
-                    className={`job-apply__input-wrap job-apply__input-wrap--tall${
-                      locationPick || selectedLocations.length ? ' job-apply__input-wrap--filled' : ''
-                    }`}
-                  >
-                    <select
-                      id="location"
-                      className="job-apply__select"
-                      value={locationPick}
-                      onChange={(e) => addLocation(e.target.value)}
-                      disabled={selectedLocations.length >= MAX_LOCATIONS || !locationOptions.length}
-                    >
-                      <option value="" hidden />
-                      {locationOptions
-                        .filter((opt) => !selectedLocations.includes(opt.label))
-                        .map((opt) => (
-                          <option key={opt.id} value={opt.label}>
-                            {opt.label}
-                          </option>
-                        ))}
-                    </select>
-                    <label className="job-apply__floating-label" htmlFor="location">
-                      Preferred work location
-                    </label>
-                  </div>
-                  <p className="job-apply__loc-counter">
-                    {selectedLocations.length}/{MAX_LOCATIONS} locations
-                  </p>
-                  {selectedLocations.length > 0 && (
-                    <div className="job-apply__loc-tags">
-                      {selectedLocations.map((loc) => (
-                        <span key={loc} className="job-apply__loc-tag">
-                          {loc}
-                          <button type="button" onClick={() => removeLocation(loc)} aria-label={`Remove ${loc}`}>
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
               </div>
             </section>
 
