@@ -7,3 +7,4 @@ export { default as EmployerDashboardFooter } from './EmployerDashboardFooter';
 export { default as JobPostForm } from './JobPostForm';
 export { default as JobPostPreview } from './JobPostPreview';
 export { default as CompanySettingsForm } from './CompanySettingsForm';
+export { default as CompanyLocationsEditor } from './CompanyLocationsEditor';
