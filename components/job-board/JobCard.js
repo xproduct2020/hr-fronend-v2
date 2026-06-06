@@ -9,7 +9,7 @@ import {
   inferWorkMode,
 } from '../../lib/job-board-utils';
 
-export default function JobCard({ job, index = 0, token, onSignIn }) {
+export default function JobCard({ job, index = 0, token, hasApplied, onSignIn }) {
   const logoStyle = LOGO_STYLES[index % LOGO_STYLES.length];
   const work = inferWorkMode(job.location);
   const isFeatured = index === 0;
@@ -65,7 +65,9 @@ export default function JobCard({ job, index = 0, token, onSignIn }) {
             {formatRelative(job.created_at)}
           </span>
         </div>
-        <span className="apply-btn">Apply now</span>
+        <span className={`apply-btn${hasApplied ? ' apply-btn--applied' : ''}`}>
+          {hasApplied ? 'Applied' : 'Apply now'}
+        </span>
       </div>
     </Link>
   );

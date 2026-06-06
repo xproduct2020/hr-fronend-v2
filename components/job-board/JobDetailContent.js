@@ -25,7 +25,7 @@ function mapsUrl(address) {
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 }
 
-export default function JobDetailContent({ job, company, jobId, token, onSignIn }) {
+export default function JobDetailContent({ job, company, jobId, token, hasApplied, onSignIn }) {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -72,7 +72,11 @@ export default function JobDetailContent({ job, company, jobId, token, onSignIn 
 
       {isOpen ? (
         <div className="job-detail-main__actions">
-          {token ? (
+          {hasApplied ? (
+            <button type="button" className="job-detail-main__apply job-detail-main__apply--applied" disabled>
+              Applied
+            </button>
+          ) : token ? (
             <Link href={`/jobs/${jobId}/apply`} className="job-detail-main__apply">
               Apply now
             </Link>

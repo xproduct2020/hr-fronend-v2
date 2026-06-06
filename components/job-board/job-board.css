@@ -607,6 +607,16 @@
   background: var(--acc);
 }
 
+.job-board .apply-btn--applied {
+  background: #e5e7eb;
+  color: #6b7280;
+  cursor: default;
+}
+
+.job-board .job-card:hover .apply-btn--applied {
+  background: #e5e7eb;
+}
+
 .job-board .load-more {
   width: 100%;
   background: #fff;
@@ -951,6 +961,12 @@
 
 .job-board .job-detail-main__apply:hover {
   background: #c62828;
+}
+
+.job-board .job-detail-main__apply--applied,
+.job-board .job-detail-main__apply--applied:hover {
+  background: #9ca3af;
+  cursor: not-allowed;
 }
 
 .job-board .job-detail-main__save {

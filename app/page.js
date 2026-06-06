@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiRequest } from '../lib/api';
+import { fetchAppliedJobIds } from '../lib/applied-jobs';
 import { formatJobType, matchesWorkMode, matchesIndustry } from '../lib/job-board-utils';
 import {
   JobBoardShell,
@@ -29,6 +30,7 @@ export default function JobSeekerPage() {
   const [hasMore, setHasMore] = useState(false);
 
   const [token, setToken] = useState(null);
+  const [appliedJobIds, setAppliedJobIds] = useState(new Set());
   const skipJobTypeFetch = useRef(true);
 
   const fetchJobs = useCallback(
@@ -61,8 +63,14 @@ export default function JobSeekerPage() {
   );
 
   useEffect(() => {
-    setToken(localStorage.getItem('token'));
+    const t = localStorage.getItem('token');
+    setToken(t);
     fetchJobs({ pageNum: 1 });
+    if (t) {
+      fetchAppliedJobIds(t).then(setAppliedJobIds);
+    } else {
+      setAppliedJobIds(new Set());
+    }
   }, [fetchJobs]);
 
   useEffect(() => {
@@ -153,6 +161,7 @@ export default function JobSeekerPage() {
         sortBy={sortBy}
         hasMore={hasMore}
         token={token}
+        appliedJobIds={appliedJobIds}
         onSortChange={setSortBy}
         onLoadMore={() => fetchJobs({ pageNum: page + 1, append: true })}
         onSignIn={goToSignIn}

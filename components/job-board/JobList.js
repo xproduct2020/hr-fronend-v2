@@ -9,6 +9,7 @@ export default function JobList({
   sortBy,
   hasMore,
   token,
+  appliedJobIds,
   onSortChange,
   onLoadMore,
   onSignIn,
@@ -36,7 +37,14 @@ export default function JobList({
           <p className="empty-state">No open jobs match your filters.</p>
         ) : (
           jobs.map((job, index) => (
-            <JobCard key={job.id} job={job} index={index} token={token} onSignIn={onSignIn} />
+            <JobCard
+              key={job.id}
+              job={job}
+              index={index}
+              token={token}
+              hasApplied={appliedJobIds?.has(String(job.id))}
+              onSignIn={onSignIn}
+            />
           ))
         )}
 
