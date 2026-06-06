@@ -136,10 +136,6 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
       setError('Phone number is required.');
       return;
     }
-    if (!selectedLocations.length) {
-      setError('Please select at least one preferred work location.');
-      return;
-    }
 
     const token = localStorage.getItem('token');
     if (!token) {
@@ -162,7 +158,7 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
           coverLetter: coverLetter.trim() || undefined,
           resumeUrl,
           phone: phone.trim(),
-          preferredLocations: selectedLocations,
+          preferredLocations: selectedLocations.length ? selectedLocations : undefined,
         }),
       });
 
@@ -300,7 +296,7 @@ export default function JobApplyForm({ jobId, job, company, profile }) {
                         ))}
                     </select>
                     <label className="job-apply__floating-label" htmlFor="location">
-                      Preferred work location <span className="job-apply__required">*</span>
+                      Preferred work location
                     </label>
                   </div>
                   <p className="job-apply__loc-counter">
