@@ -562,14 +562,24 @@
 }
 
 .employer-applicant-card__status {
+  width: auto;
+  min-width: 110px;
+  max-width: 140px;
   font-size: 13px;
-  padding: 6px 10px;
+  padding: 6px 28px 6px 10px;
   border-radius: 8px;
   border: 1px solid var(--card-border);
   background: var(--bg);
   color: var(--text);
   font-family: var(--dm);
   flex-shrink: 0;
+  align-self: flex-start;
+  margin-left: auto;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  cursor: pointer;
 }
 
 .employer-applicant-card__details {
@@ -642,6 +652,7 @@
 }
 
 .employer-applicant-card select {
+  width: auto;
   font-size: 12px;
   padding: 4px 8px;
   border-radius: 6px;
@@ -649,4 +660,17 @@
   background: var(--bg);
   color: var(--text);
   font-family: var(--dm);
+}
+
+@media (max-width: 640px) {
+  .employer-applicant-card__header {
+    flex-wrap: wrap;
+  }
+
+  .employer-applicant-card__status {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-top: 4px;
+  }
 }
