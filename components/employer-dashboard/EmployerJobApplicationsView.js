@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { apiRequest, authHeader } from '../../../lib/api';
+import { apiRequest, authHeader } from '../../lib/api';
 import EmployerDashboardShell from './EmployerDashboardShell';
 import EmployerDashboardHeader from './EmployerDashboardHeader';
 import EmployerDashboardFooter from './EmployerDashboardFooter';
