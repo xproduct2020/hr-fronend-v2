@@ -460,12 +460,177 @@
   line-height: 1;
 }
 
+.employer-dash__stats--four {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 900px) {
+  .employer-dash__stats--four {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.employer-dash__back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.employer-dash__back-link:hover {
+  color: var(--acc);
+}
+
+.employer-job-apps__meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: -12px 0 24px;
+  flex-wrap: wrap;
+}
+
+.employer-job-apps__posted {
+  font-size: 13px;
+  color: var(--muted);
+}
+
 .employer-applicant-card {
+  background: var(--card);
   border: 1px solid var(--card-border);
-  border-radius: 10px;
-  padding: 16px;
+  border-radius: 12px;
+  padding: 20px 24px;
   margin-bottom: 12px;
-  background: rgba(15, 23, 42, 0.4);
+}
+
+.employer-applicant-card__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.employer-applicant-card__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.15);
+  color: var(--acc);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--syne);
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.employer-applicant-card__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.employer-applicant-card__name {
+  font-family: var(--syne);
+  font-size: 17px;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.employer-applicant-card__email {
+  margin: 0 0 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.employer-applicant-card__meta {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.employer-applicant-card__headline {
+  margin: 6px 0 0;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.employer-applicant-card__status {
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--dm);
+  flex-shrink: 0;
+}
+
+.employer-applicant-card__details {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 16px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(51, 65, 85, 0.6);
+}
+
+.employer-applicant-card__details p {
+  margin: 0 0 8px;
+}
+
+.employer-applicant-card__details strong {
+  color: var(--text);
+}
+
+.employer-applicant-card__cover {
+  white-space: pre-wrap;
+}
+
+.employer-applicant-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.employer-applicant-card__date {
+  font-size: 12px;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.employer-applicant-card__cv-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: var(--acc);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.employer-applicant-card__cv-btn:hover {
+  background: var(--acc-hover);
+}
+
+.employer-applicant-card__no-cv {
+  font-size: 12px;
+  color: #64748b;
+  font-style: italic;
 }
 
 .employer-applicant-card__row {
