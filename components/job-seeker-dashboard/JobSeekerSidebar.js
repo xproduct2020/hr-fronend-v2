@@ -1,3 +1,7 @@
+'use client';
+
+import { useRouter } from 'next/navigation';
+
 const NAV_ITEMS = [
   { id: 'dashboard', label: 'Dashboard', icon: 'ti-layout-dashboard', href: '/dashboard' },
   { id: 'cv', label: 'CV Attachment', icon: 'ti-paperclip', href: '/dashboard#cv' },
@@ -17,6 +21,13 @@ export default function JobSeekerSidebar({
   activeId = 'dashboard',
   onToggleCvVisible,
 }) {
+  const router = useRouter();
+
+  function logout() {
+    localStorage.removeItem('token');
+    router.push('/login');
+  }
+
   return (
     <aside className="js-dash__sidebar">
       <div className="js-dash__welcome">
@@ -56,6 +67,12 @@ export default function JobSeekerSidebar({
             </a>
           </li>
         ))}
+        <li>
+          <button type="button" className="js-dash__nav-logout" onClick={logout}>
+            <i className="ti ti-logout" aria-hidden="true" />
+            Logout
+          </button>
+        </li>
       </ul>
     </aside>
   );
