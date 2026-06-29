@@ -212,6 +212,19 @@
   justify-content: center;
 }
 
+.js-dash__nav-logout {
+  color: var(--muted);
+}
+
+.js-dash__nav-logout:hover {
+  color: var(--red);
+  background: #fef2f2;
+}
+
+.js-dash__nav-logout:hover i {
+  color: var(--red);
+}
+
 .js-dash__main {
   display: flex;
   flex-direction: column;
